@@ -1,0 +1,75 @@
+.events, .members {
+    margin-top: 20px;
+}
+  
+h2 {
+    color: #ffffff;
+}
+  
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+  
+.event-item, .member-item {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    vertical-align: middle ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    border: 1px solid #3d3d3f;
+}
+
+
+.event-item:hover, .member-item:hover {
+background-color: #3e3e40;
+}
+
+
+.event-details {
+    line-height: 1.5;
+}
+  
+strong {
+    font-weight: bold;
+}
+  
+
+.badge-admin{
+  color:#fff;
+  background-color:#007bff
+}
+.badge-member{
+  color:#fff;
+  background-color:green
+}
+.badge-cofounder{
+  color:#fff;
+  background-color:green
+}
+
+.badge-red{
+  color:#fff;
+  background-color:red
+}
+
+.badge:empty{
+  display:none
+}
+
+.badge{
+  display:inline-block;
+  padding:.75em .550em;
+  font-size:80%;
+  font-weight:500;
+  line-height:1;
+  text-align:center;
+  white-space:nowrap;
+  vertical-align:baseline;
+  border-radius:.25rem;
+}

@@ -1,0 +1,126 @@
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-right: 20px; 
+}
+/* Kalendarz */
+.calendar {
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px; /* Odstęp poniżej kalendarza */
+}
+
+.calendar h3 {
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.calendar table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar table th, .calendar table td {
+    text-align: center;
+    padding: 10px;
+    color: #ffffff;
+}
+
+.calendar table td {
+    background-color: #3e3e40;
+    border-radius: 50%;
+}
+
+/* Menu */
+
+
+button.join-btn {
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button.join-btn:hover {
+    background-color: #218838;
+}
+
+/* Upcoming meetups */
+.upcoming-meetups-container {
+    width: 35%; /* Szerokość sekcji nadchodzących spotkań */
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.upcoming-meetups-container h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.recent-meetups-container {
+    width: 20%; 
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.recent-meetups-container h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.meetup-item {
+    background-color: #2c2c2e;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.3s ease;
+    border: 1px solid #3d3d3f;
+}
+
+.meetup-item:hover {
+    background-color: #3e3e40;
+}
+
+.meetup-item span {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+}
+
+.meetup-item .status {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.cancel {
+    background-color: #dc3545;
+}
+
+button.accept {
+    background-color: green;
+}
+
+button:hover {
+    background-color: #555;
+}

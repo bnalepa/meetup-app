@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="/js/popup.js" defer></script>
+<link rel="stylesheet" href="/css/popup.css">
+
+
+
+
+<!-- Pop-up -->
+<div id="popup-overlay" class="hidden"></div>
+
+<div id="popup-window" class="hidden"> 
+    <button id="popup-close">&#10006;</button>
+    <h2 id="popup-title">Popup Title</h2>
+    <p id="popup-content">Popup content goes here...<br></p>
+    <div id="popup-buttons">
+        <button id="popup-ok" class="btn-ok">OK</button>
+        <button id="popup-cancel" class="btn-cancel">Cancel</button>
+    </div>
+</div>
+
+
+
+
+<aside class="sidebar">
+    <h2>Meetio</h2>
+    <nav>
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Debt</a></li>
+            <li><a href="/meetings"><i class="fas fa-users"></i> Meetings</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Availability</a></li>
+            <li><a href="#"><i class="fas fa-map-marker-alt"></i> Places</a></li>
+        </ul>
+    </nav>
+
+    <section class="groups-section">
+        <h3>Groups</h3>
+        <ul class="groups-list">
+            <% groups.forEach(group => { %>
+                <li><a href="/groups/<%= group.id %>/view"><i class="fas fa-users"></i> <%= group.name %></a></li>
+            <% }) %>
+        </ul>
+    </section>
+
+    <div class="profile">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0CR_X6IA3ZOfxAV1sLwE9JrgKLNNhsfbqvw&s" alt="User avatar">
+        <div class="name">Krzysztof Palonek</div>
+        <p>kpalonek@gmail.com</p>
+    </div>
+
+    <nav class="settings-nav">
+        <ul>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+        <button onclick="showPopup('Test Popup', 'This is a test popup.', 'ADDD', 'Back', () => alert('OK clicked!'), () => alert('Cancel clicked!'));">
+            Show Pop-up
+        </button>
+    </nav>
+</aside>
+
+

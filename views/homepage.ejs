@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetUp - Home</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+    <div id="app">
+        <%- include('menu') %>
+
+        <main class="content">
+
+            <section class="left-panel">
+                <section class="calendar">
+                    <h3>March 2022</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Sekcja kategorii grup -->
+                <section class="group-categories">
+
+                </section>
+            </section>
+
+            <!-- Sekcja z nadchodzącymi spotkaniami -->
+            <section class="upcoming-meetups-container">
+                <h3>Upcoming meetups</h3>
+                <div class="meetup-item">
+                    <span>Friend Group 1</span>
+                    <span class="status">1 day 14 hours</span>
+                    <button class="cancel">Cancel</button>
+                </div>
+                <div class="meetup-item">
+                    <span>Work Group Meeting</span>
+                    <span class="status">35 min</span>
+                    <button class="cancel">Cancel</button>
+                </div>
+                <div class="meetup-item">
+                    <span>Friend Group 2</span>
+                    <span class="status">1 week 2 days</span>
+                    <button class="accept">Accept</button>
+                </div>
+                <div class="meetup-item">
+                    <span>Old Friends</span>
+                    <span class="status">17 minutes</span>
+                    <button class="cancel">Cancel</button>
+                </div>
+            </section>
+            <section class="recent-meetups-container">
+                <h3>Recent meetups</h3>
+                <div class="meetup-item">
+                    <span>Friend Group 1</span>
+                    <span class="status">1 day 14 hours</span>
+                </div>
+
+                <div class="meetup-item">
+                    <span>Friend Group 2</span>
+                    <span class="status">2 days ago</span>
+                </div>
+                <div class="meetup-item">
+                    <span>Old Friends</span>
+                    <span class="status">4 days ago</span>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

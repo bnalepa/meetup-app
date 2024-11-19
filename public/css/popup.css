@@ -1,0 +1,78 @@
+/* Tło dla pop-upu */
+#popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* Okno pop-upu */
+#popup-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%; /* Możesz dostosować szerokość */
+    max-width: 600px;
+    background-color: #2e2e30;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000;
+    text-align: center;
+}
+
+/* Tytuł pop-upu */
+#popup-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: white;
+}
+
+/* Treść pop-upu */
+#popup-content {
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Kontenery dla przycisków */
+#popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Przycisk zamknięcia (X) */
+#popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+}
+
+/* Stylowanie przycisków OK i Cancel */
+.btn-ok {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

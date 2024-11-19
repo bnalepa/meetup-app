@@ -1,0 +1,91 @@
+/* Upcoming meetups */
+.upcoming-meetups-container {
+    width: 35%;
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.upcoming-meetups-container h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.meetup-item {
+    background-color: #2c2c2e;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background-color 0.3s ease;
+    border: 1px solid #3d3d3f;
+}
+
+.meetup-item:hover {
+    background-color: #3e3e40;
+}
+
+.meetup-item span {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    margin-bottom: 5px;
+}
+
+.meetup-item .status {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Meeting place selection */
+.meeting-details {
+    width: 55%; 
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.meeting-details h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.meeting-details .details p {
+    margin-bottom: 15px;
+    color: #d1d1d1;
+    font-size: 1.1rem;
+}
+
+.meeting-details button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.meeting-details .share {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.archive-meeting, .delete-meeting {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}

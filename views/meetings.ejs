@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetUp - Meetings</title>
+    <link rel="stylesheet" href="/css/meetings.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Uniwersalne menu -->
+        <%- include('menu') %>
+
+        <!-- Zawartość strony Meetings -->
+        <main class="content">
+            <!-- Nadchodzące spotkania -->
+            <section class="upcoming-meetups-container">
+                <h3>Upcoming meetups</h3>
+
+                <div class="meetup-item">
+                    <span>Meeting place selection</span>
+                    <span class="status">You have a new meeting request.</span>
+                </div>
+
+                <div class="meetup-item">
+                    <span>Meeting place selection</span>
+                    <span class="status">Meeting request accepted.</span>
+                </div>
+
+                <div class="meetup-item">
+                    <span>Choose meeting point</span>
+                    <span class="status">Meeting request accepted.</span>
+                </div>
+
+                <div class="meetup-item">
+                    <span>Coordinate meeting</span>
+                    <span class="status">Meeting request on hold.</span>
+                </div>
+
+                <div class="meetup-item">
+                    <span>Group event planning</span>
+                    <span class="status">Meeting request accepted.</span>
+                </div>
+            </section>
+
+            <!-- Szczegóły spotkania -->
+            <section class="meeting-details">
+                <h3>Meeting place selection</h3>
+
+                <div class="details">
+                    <p>Availability: <strong>Myself</strong></p>
+                    <p>Schedule: <strong>Now</strong></p>
+                    <p>Groups: <strong>New group</strong></p>
+                    <p>Importance: <strong>Moderate</strong></p>
+
+                    <p>Location details: <strong>No location details</strong></p>
+                    <button class="add-location">Add location</button>
+
+                    <p>Meeting links: <strong>No shared links</strong></p>
+                    <button class="share">Share</button>
+
+                    <button class="archive-meeting">Archive meeting</button>
+                    <button class="delete-meeting">Delete meeting</button>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
