@@ -86,13 +86,19 @@ app.get('/groups/:id/view', async (req, res) => {
 
 app.post('/memberships', async (req, res) => {
   const { email, groupId } = req.body; // Pobieramy `email` i `groupId` z treści żądania
+    const role = 2; // Member
+    console.log(role)
   try {
     if (!email || !groupId.value) {
-      return res.status(400).json({ error: 'Missing email or group ID' }); // Walidacja wejścia
+      return res.status(400).json({ error: 'Missing email' }); // Walidacja wejścia
     }
-
-
     console.log(`Adding member with email: ${email} to group ${groupId.value}`);
+
+    console.log({
+      email,
+      role,
+      groupId: { value: groupId.value }, 
+    })
 
     // Wywołanie API backendowego do dodania członka
     const response = await apiClient.post('/memberships', {
@@ -113,6 +119,25 @@ app.post('/memberships', async (req, res) => {
     res.status(500).json({ error: 'Failed to add member' });
   }
 });
+
+app.put('/memberships/:id', async (req, res) => {
+  const { id } = req.params; // ID członkostwa z URL
+  const { role } = req.body; // Nowa rola z treści żądania
+
+  try {
+      const response = await apiClient.put(`/memberships/${id}`, { role }); // Wywołanie API backendowego
+      if (response.status === 204) {
+          res.status(204).send(); // Odpowiedź bez treści
+      } else {
+          res.status(response.status).json(response.data);
+      }
+  } catch (error) {
+      console.error('Error updating role:', error.message);
+      res.status(500).json({ error: 'Failed to update role' });
+  }
+});
+
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

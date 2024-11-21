@@ -31,11 +31,13 @@
                             <li class="member-item">
                             <span><strong><%= member.name %> <%= member.surname %></strong></span>
                             <span>
-                                <span class="badge <%= member.role === 0 ? 'badge-admin' : 'badge-member' %>">
-                                <%= member.role === 0 ? 'Admin' : 'Member' %>
+                                <span class="badge 
+                                    <%= member.role === 0 ? 'badge-admin' : member.role === 1 ? 'badge-cofounder' : 'badge-member' %>">
+                                    <%= member.role === 0 ? 'Admin' : member.role === 1 ? 'Co-Founder' : 'Member' %>
                                 </span>
-                                    <i class="fas fa-cog"></i> </a></li>
+                                <i class="fas fa-cog" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')"></i>
                             </span>
+                            
                             </li>
                         <% }) %>
 

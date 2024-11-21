@@ -7,12 +7,10 @@ async function addMember(groupId) {
     }
 
     try {
-        // Przygotuj dane do żądania
+
         const payload = {
-            userId: { value: "" }, // Puste userId
-            role: 0, // Domyślnie rola 0 (np. Member)
-            groupId: { value: groupId }, // Przekaż ID grupy
-            email: emailToAdd // Wpisany e-mail
+            groupId: { value: groupId }, 
+            email: emailToAdd 
         };
 
         // Wyślij żądanie POST do endpointu /memberships
@@ -47,5 +45,52 @@ function showAddMemberPopup(groupId) {
     );
   }
 
+  function showChangeRolePopup(memberId, currentRole) {
+    // Zdefiniuj treść pop-upu z select
+    const popupContent = `
+        <label for="newRole">Select new role:</label>
+        <select id="newRole">
+            <option value="1" ${currentRole === 1 ? 'selected' : ''}>Cofounder</option>
+            <option value="2" ${currentRole === 2 ? 'selected' : ''}>Member</option>
+        </select>
+    `;
+
+    // Wywołaj funkcję do wyświetlenia pop-upu
+    showPopup(
+        'Change Role', // Tytuł pop-upu
+        popupContent, // Treść pop-upu
+        'Save', // Tekst przycisku OK
+        'Cancel', // Tekst przycisku Anuluj
+        () => updateRole(memberId) // Funkcja wywoływana przy zapisie
+    );
+}
+
+// Funkcja do aktualizacji roli
+async function updateRole(memberId) {
+    const newRole = document.getElementById('newRole').value;
+
+    try {
+        const response = await fetch(`/memberships/${memberId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role: parseInt(newRole, 10) }), // Przekaż nową rolę
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update role');
+        }
+
+        alert('Role updated successfully');
+        location.reload(); // Odśwież stronę, aby zobaczyć zmiany
+    } catch (error) {
+        console.error('Error updating role:', error.message);
+        alert('Failed to update role. Please try again.');
+    }
+}
+
+
+window.showChangeRolePopup = showChangeRolePopup;
 window.showAddMemberPopup = showAddMemberPopup;
 window.addMember = addMember;

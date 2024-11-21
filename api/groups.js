@@ -58,39 +58,6 @@ async function getUserNameSurname(userId)
 
 
 
-async function addMember(groupId) {
-  const userToAdd = document.getElementById('inputMember').value; // Pobierz wpisany ID użytkownika
-
-  if (!userToAdd) {
-      alert('Please enter a valid User ID');
-      return;
-  }
-
-  try {
-      // Wyślij żądanie POST do backendu na `/groups/:groupId/members`
-      const response = await fetch(`/groups/${groupId}/members`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: userToAdd }), // Przekaż ID użytkownika w treści żądania
-      });
-
-      if (!response.ok) {
-          throw new Error('Failed to add member');
-      }
-
-      const data = await response.json(); // Odbierz odpowiedź z backendu
-      alert(`User ${data.userId} has been added to the group!`); // Wyświetl komunikat o sukcesie
-      location.reload(); // Odśwież stronę, aby zaktualizować listę członków
-  } catch (error) {
-      console.error('Error adding member:', error.message);
-      alert('Failed to add member. Please try again.');
-  }
-}
-
-
-
 module.exports = {
   apiClient,
   getGroups,

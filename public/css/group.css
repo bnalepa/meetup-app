@@ -50,13 +50,14 @@ strong {
 }
 .badge-cofounder{
   color:#fff;
-  background-color:green
+  background-color:orange
 }
 
 .badge-red{
   color:#fff;
   background-color:red
 }
+
 
 .badge:empty{
   display:none
