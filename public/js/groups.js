@@ -1,3 +1,14 @@
+
+function showAddMemberPopup(groupId) {
+    showPopup(
+        'Add Member',
+        '<input type="text" id="inputMember" placeholder="Enter User Email">', // Zmieniono placeholder na e-mail
+        'Add Member',
+        'Cancel',
+        () => addMember(groupId) // Przekaż ID grupy do funkcji addMember
+    );
+  }
+
 async function addMember(groupId) {
     const emailToAdd = document.getElementById('inputMember').value; // Pobierz wpisany e-mail użytkownika
 
@@ -35,33 +46,23 @@ async function addMember(groupId) {
     }
 }
 
-function showAddMemberPopup(groupId) {
-    showPopup(
-        'Add Member',
-        '<input type="text" id="inputMember" placeholder="Enter User Email">', // Zmieniono placeholder na e-mail
-        'Add Member',
-        'Cancel',
-        () => addMember(groupId) // Przekaż ID grupy do funkcji addMember
-    );
-  }
-
-  function showChangeRolePopup(memberId, currentRole) {
+function showChangeRolePopup(memberId, currentRole) {
     // Zdefiniuj treść pop-upu z select
     const popupContent = `
-        <label for="newRole">Select new role:</label>
+        <label for="newRole">New role:</label>
         <select id="newRole">
-            <option value="1" ${currentRole === 1 ? 'selected' : ''}>Cofounder</option>
-            <option value="2" ${currentRole === 2 ? 'selected' : ''}>Member</option>
+            <option value="1" ${currentRole == 1 ? 'selected' : ''}>Cofounder</option>
+            <option value="2" ${currentRole == 2 ? 'selected' : ''}>Member</option>
         </select>
     `;
 
     // Wywołaj funkcję do wyświetlenia pop-upu
     showPopup(
-        'Change Role', // Tytuł pop-upu
-        popupContent, // Treść pop-upu
-        'Save', // Tekst przycisku OK
-        'Cancel', // Tekst przycisku Anuluj
-        () => updateRole(memberId) // Funkcja wywoływana przy zapisie
+        'Change Role for Member', 
+        popupContent, 
+        'Save',
+        'Cancel', 
+        () => updateRole(memberId)
     );
 }
 
@@ -75,7 +76,7 @@ async function updateRole(memberId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ role: parseInt(newRole, 10) }), // Przekaż nową rolę
+            body: JSON.stringify({ role: parseInt(newRole, 10) }),
         });
 
         if (!response.ok) {
@@ -83,12 +84,13 @@ async function updateRole(memberId) {
         }
 
         alert('Role updated successfully');
-        location.reload(); // Odśwież stronę, aby zobaczyć zmiany
+        location.reload();
     } catch (error) {
         console.error('Error updating role:', error.message);
         alert('Failed to update role. Please try again.');
     }
 }
+
 
 
 window.showChangeRolePopup = showChangeRolePopup;

@@ -2,7 +2,7 @@
     margin-top: 20px;
 }
   
-h2 {
+h2, h3, h1 {
     color: #ffffff;
 }
   
@@ -11,7 +11,7 @@ ul {
     padding: 0;
 }
   
-.event-item, .member-item {
+.event-item, .member-item{
     background-color: #333;
     color: #fff;
     padding: 15px;
@@ -23,6 +23,14 @@ ul {
     align-items: center;
     transition: background-color 0.3s ease;
     border: 1px solid #3d3d3f;
+}
+
+.title {
+  vertical-align: middle ;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
 }
 
 
@@ -46,11 +54,11 @@ strong {
 }
 .badge-member{
   color:#fff;
-  background-color:green
+  background-color:#6c2080
 }
 .badge-cofounder{
   color:#fff;
-  background-color:orange
+  background-color:rgb(184, 133, 38)
 }
 
 .badge-red{

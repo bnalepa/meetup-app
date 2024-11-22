@@ -134,17 +134,34 @@ body {
 
 /* Ogólne style dla przycisków */
 button {
-    background-color: #28a745;
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    background-color: transparent;
 }
 
-button.cancel {
-    background-color: #dc3545;
+.red-button {
+    background-color: #8a1521;
+}
+
+.green-button {
+    background-color: #147e2d;
+}
+
+.blue-button {
+    background-color: #175da8;
+}
+
+.purple-button {
+    background-color: #9031a8;
+}
+
+.gray-button
+{
+    background-color: #333
 }
 
 button.availability {
@@ -157,4 +174,12 @@ button:hover {
 
 .hidden {
     display: none;
+}
+
+.fill-verticaly {
+    height: 32px;
+}
+
+.white-icon {
+    filter: invert(1) brightness(1); /* Odwraca kolor i rozjaśnia */
 }

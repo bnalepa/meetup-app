@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const { apiClient, getGroups, getGroupEvents, getGroupMembers, getUserNameSurname } = require('./api/groups'); // Import API functions
+const { apiClient, getGroups, getGroupEvents, getGroupMembers, getUserNameSurname, getGroupInfo } = require('./api/groups'); // Import API functions
 
 app.use(express.json()); // Middleware do obsługi treści JSON
 app.use(express.urlencoded({ extended: true })); // Opcjonalne: Obsługa danych przesłanych jako URL-encoded
@@ -51,12 +51,13 @@ app.get('/settings', (req, res) => {
 // Group detail page
 app.get('/groups/:id/view', async (req, res) => {
   const groupId = req.params.id;
-  console.log("ok")
   try {
-    const events = await getGroupEvents(groupId); // Fetch group events
-    const members = await getGroupMembers(groupId); // Fetch group members
-
+    const events = await getGroupEvents(groupId);
+    const members = await getGroupMembers(groupId);
+    const groupName = await getGroupInfo(groupId);
     // Fetch names and surnames for each member
+
+    console.log(groupName)
     const detailedMembers = await Promise.all(
       members.map(async (member) => {
         try {
@@ -77,7 +78,8 @@ app.get('/groups/:id/view', async (req, res) => {
     );
 
     // Render group view with events and detailed member data
-    res.render('group', { events, members: detailedMembers, groupId });
+    res.render('group', 
+      {events, members: detailedMembers, groupName , groupId});
   } catch (error) {
     console.error('Error loading group details:', error);
     res.status(500).send('Error loading group details');
@@ -85,12 +87,12 @@ app.get('/groups/:id/view', async (req, res) => {
 });
 
 app.post('/memberships', async (req, res) => {
-  const { email, groupId } = req.body; // Pobieramy `email` i `groupId` z treści żądania
+  const { email, groupId } = req.body; 
     const role = 2; // Member
     console.log(role)
   try {
     if (!email || !groupId.value) {
-      return res.status(400).json({ error: 'Missing email' }); // Walidacja wejścia
+      return res.status(400).json({ error: 'Missing email' }); 
     }
     console.log(`Adding member with email: ${email} to group ${groupId.value}`);
 

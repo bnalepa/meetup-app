@@ -19,10 +19,22 @@
         <div class="content">
 
             <section class="big-container">
+                <span class = "title">
+                    <span><%=groupName%></span>
+                        <span>
+                            <button class="blue" onclick="showRenameGroupPopup('<%= groupId %>')">
+                                <img src="/icons/rename.png" alt="Rename" class="white-icon">
+                            </button>
+                            <button class="red" onclick="showDeleteGroupPopup('<%= groupId %>')">
+                                <img src="/icons/delete.png" alt="Delete" class="white-icon">
+                            </button>
+                        </span>
+                </span>
+                <hr>
                 <section class="members">
                     <h2>Members</h2>
-                    <button class="add-button" onclick="showAddMemberPopup('<%= groupId %>')">
-                        <i class="fa-solid fa-plus"></i> Add Member
+                    <button class="green-button" onclick="showAddMemberPopup('<%= groupId %>')">
+                        <i class="fa-solid fa-plus"></i>
                     </button>
                     
                     <ul>
@@ -35,7 +47,10 @@
                                     <%= member.role === 0 ? 'badge-admin' : member.role === 1 ? 'badge-cofounder' : 'badge-member' %>">
                                     <%= member.role === 0 ? 'Admin' : member.role === 1 ? 'Co-Founder' : 'Member' %>
                                 </span>
-                                <i class="fas fa-cog" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')"></i>
+                                <button class="blue-button fill-verticaly" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+
                             </span>
                             
                             </li>
