@@ -1,16 +1,17 @@
 
 function showAddMemberPopup(groupId) {
+    const popupContent = `<input type="text" id="inputMember" placeholder="Enter User Email">`
     showPopup(
         'Add Member',
-        '<input type="text" id="inputMember" placeholder="Enter User Email">', // Zmieniono placeholder na e-mail
+        popupContent,
         'Add Member',
         'Cancel',
-        () => addMember(groupId) // Przekaż ID grupy do funkcji addMember
+        () => addMember(groupId)
     );
   }
 
 async function addMember(groupId) {
-    const emailToAdd = document.getElementById('inputMember').value; // Pobierz wpisany e-mail użytkownika
+    const emailToAdd = document.getElementById('inputMember').value;
 
     if (!emailToAdd) {
         alert('Please enter a valid email address');
@@ -47,7 +48,6 @@ async function addMember(groupId) {
 }
 
 function showChangeRolePopup(memberId, currentRole) {
-    // Zdefiniuj treść pop-upu z select
     const popupContent = `
         <label for="newRole">New role:</label>
         <select id="newRole">
@@ -56,7 +56,6 @@ function showChangeRolePopup(memberId, currentRole) {
         </select>
     `;
 
-    // Wywołaj funkcję do wyświetlenia pop-upu
     showPopup(
         'Change Role for Member', 
         popupContent, 
@@ -91,7 +90,53 @@ async function updateRole(memberId) {
     }
 }
 
+function showRenameGroupPopup(groupId,groupName) {
+    //<label for="newName">New name:</label>
+    const popupContent = `
+        
+        <input type="text" id="inputNewNameGroup" placeholder="Enter New Group Name" value="${groupName}">
+    `;
 
+    showPopup(
+        'Rename Group', 
+        popupContent, 
+        'Rename',
+        'Cancel', 
+        () => updateGroupName(groupId)
+    );
+}
+
+function showDeleteGroupPopup(memberId, currentRole) {
+    // Zdefiniuj treść pop-upu z select
+    const popupContent = `
+        Are you sure?
+    `;
+
+    // Wywołaj funkcję do wyświetlenia pop-upu
+    showPopup(
+        'Delete Gruop', 
+        popupContent, 
+        'Yes',
+        'No', 
+        () => updateRole(memberId)
+    );
+}
+
+function showRemoveMemberPopup(memberId) {
+    // Zdefiniuj treść pop-upu z select
+    const popupContent = `
+        Are you sure?
+    `;
+
+    // Wywołaj funkcję do wyświetlenia pop-upu
+    showPopup(
+        'Remove User From Group ', 
+        popupContent, 
+        'Yes',
+        'No', 
+        () => updateRole(memberId)
+    );
+}
 
 window.showChangeRolePopup = showChangeRolePopup;
 window.showAddMemberPopup = showAddMemberPopup;

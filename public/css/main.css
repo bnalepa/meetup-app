@@ -21,7 +21,7 @@ body {
 }
 
 .big-container {
-    min-width: 45%; /* Szerokość sekcji nadchodzących spotkań */
+    min-width: 45%;
     height: 80%;
     background-color: #2e2e30;
     padding: 20px;
@@ -29,7 +29,7 @@ body {
 }
 
 .small-container {
-  min-width: 35%; /* Szerokość sekcji nadchodzących spotkań */
+  min-width: 45%; 
   background-color: #2e2e30;
   height: 80%;
   padding: 20px;

@@ -19,10 +19,10 @@
         <div class="content">
 
             <section class="big-container">
-                <span class = "title">
+                <span class="title">
                     <span><%=groupName%></span>
                         <span>
-                            <button class="blue" onclick="showRenameGroupPopup('<%= groupId %>')">
+                            <button class="blue" onclick="showRenameGroupPopup('<%= groupId %>','<%= groupName %>')">
                                 <img src="/icons/rename.png" alt="Rename" class="white-icon">
                             </button>
                             <button class="red" onclick="showDeleteGroupPopup('<%= groupId %>')">
@@ -32,10 +32,12 @@
                 </span>
                 <hr>
                 <section class="members">
-                    <h2>Members</h2>
-                    <button class="green-button" onclick="showAddMemberPopup('<%= groupId %>')">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                    <span class="title">
+                        <h2>Members</h2>
+                        <button class="green" onclick="showAddMemberPopup('<%= groupId %>')">
+                            <img src="/icons/plus-circle.png" alt="Add" class="white-icon">
+                        </button>
+                    </span>
                     
                     <ul>
                         <% if (members && members.length > 0) { %>
@@ -43,14 +45,18 @@
                             <li class="member-item">
                             <span><strong><%= member.name %> <%= member.surname %></strong></span>
                             <span>
-                                <span class="badge 
-                                    <%= member.role === 0 ? 'badge-admin' : member.role === 1 ? 'badge-cofounder' : 'badge-member' %>">
-                                    <%= member.role === 0 ? 'Admin' : member.role === 1 ? 'Co-Founder' : 'Member' %>
+                                <span class="role badge badge-<%= member.role === 0 ? 'admin' : member.role === 1 ? 'cofounder' : 'member' %>">
+                                    <b><%= member.role === 0 ? 'Admin' : member.role === 1 ? 'Co-Founder' : 'Member' %>
+                                    </b>
                                 </span>
-                                <button class="blue-button fill-verticaly" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')">
-                                    <i class="fas fa-cog"></i>
+                                <span>
+                                <button class="blue" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')">
+                                    <img src="/icons/settings.png" alt="Add" class="white-icon">
                                 </button>
-
+                                <button class="blue" onclick="showRemoveMemberPopup('<%= member.id %>')">
+                                    <img src="/icons/minus.png" alt="Add" class="white-icon">
+                                </button>
+                                </span>
                             </span>
                             
                             </li>
