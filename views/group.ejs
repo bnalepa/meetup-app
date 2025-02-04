@@ -20,7 +20,7 @@
 
             <section class="big-container">
                 <span class="title">
-                    <span><%=groupName%></span>
+                <h1><span><%=groupName%></span></h1>
                         <span>
                             <button class="blue" onclick="showRenameGroupPopup('<%= groupId %>','<%= groupName %>')">
                                 <img src="/icons/rename.png" alt="Rename" class="white-icon">
@@ -35,7 +35,7 @@
                     <span class="title">
                         <h2>Members</h2>
                         <button class="green" onclick="showAddMemberPopup('<%= groupId %>')">
-                            <img src="/icons/plus-circle.png" alt="Add" class="white-icon">
+                            <img src="/icons/plus.png" alt="Add" class="white-icon">
                         </button>
                     </span>
                     
@@ -45,18 +45,20 @@
                             <li class="member-item">
                             <span><strong><%= member.name %> <%= member.surname %></strong></span>
                             <span>
-                                <span class="role badge badge-<%= member.role === 0 ? 'admin' : member.role === 1 ? 'cofounder' : 'member' %>">
-                                    <b><%= member.role === 0 ? 'Admin' : member.role === 1 ? 'Co-Founder' : 'Member' %>
+                                <span class="role badge badge-<%= member.role === 0 ? 'founder' : member.role === 1 ? 'moderator' : 'member' %>">
+                                    <b><%= member.role === 0 ? 'Founder' : member.role === 1 ? 'Moderator' : 'Member' %>
                                     </b>
                                 </span>
+                                <% if (member.role !== 0) { %> <!-- Ukrywamy przyciski dla Adminów -->
                                 <span>
                                 <button class="blue" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')">
                                     <img src="/icons/settings.png" alt="Add" class="white-icon">
                                 </button>
-                                <button class="blue" onclick="showRemoveMemberPopup('<%= member.id %>')">
+                                <button class="red" onclick="showRemoveMemberPopup('<%= member.id %>')">
                                     <img src="/icons/minus.png" alt="Add" class="white-icon">
                                 </button>
                                 </span>
+                                <% } %>
                             </span>
                             
                             </li>
@@ -73,11 +75,25 @@
                     <% if (events && events.length > 0) { %>
                     <% events.forEach(event => { %>
                         <li class="event-item">
-                        <div class="event-details">
+                        <div class="event-details" id=<%=event.eventId.value%>>
+                            
+                            <span>Status: <%=event.eventStatus %></span><br>
                             <strong><h2><%= event.name %></h2></strong>
                             <span>Description: <i><%= event.description %></i></span><br>
                             <span>Location: <%= event.location %></span><br>
                             <span>Start Date: <%= new Date(event.startDate).toLocaleString() %></span><br>
+                            <% if (true) { %> <!-- Ukrywamy przyciski dla Adminów -->
+                                <span>
+                                <button class="red" onclick="showDeleteEventPopup('<%= event.eventId.value %>')">
+                                    <img src="/icons/delete.png" alt="Delete" class="white-icon">
+                                </button>
+                                </span>
+                                <% } %>
+                            <span>
+                                <button class="red" onclick="showMoveEventPopup('<%= event.eventId.value %>')">
+                                    <img src="/icons/nextPhase.png" alt="Go to next phase" class="white-icon">
+                                </button>
+                            </span>
                         </div>
                         </li>
                     <% }) %>

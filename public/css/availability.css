@@ -1,0 +1,29 @@
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+}
+  
+  .fc-event {
+    background-color: #378006; /* Kolor tła wydarzenia */
+    border: none; /* Usuń obramowanie */
+}
+
+.title {
+    vertical-align: middle ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+
+label {
+  margin: 5px;
+}
+
+.fc-event-time, .fc-daygrid-event-dot {
+  display: none;
+}
+
+.fc-event-title{
+  font-size: 8px;
+}

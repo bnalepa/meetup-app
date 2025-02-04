@@ -20,20 +20,36 @@ body {
     min-height: 100vh;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.full-container {
+    min-width: 95%; 
+    background-color: #2e2e30;
+    min-height: 80%;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 10px;
+  }
+
 .big-container {
     min-width: 45%;
-    height: 80%;
+    min-height: 80%;
     background-color: #2e2e30;
     padding: 20px;
     border-radius: 8px;
+    margin: 10px;
 }
 
 .small-container {
   min-width: 45%; 
   background-color: #2e2e30;
-  height: 80%;
+  min-height: 80%;
   padding: 20px;
   border-radius: 8px;
+  margin: 10px;
 }
 
 /* Sidebar styles */
@@ -182,4 +198,17 @@ button:hover {
 
 .white-icon {
     filter: invert(1) brightness(1); /* Odwraca kolor i rozjaśnia */
+}
+
+a {
+    color: #d1d1d1;
+    text-decoration: none;
+}
+.groups-list li {
+    margin-bottom: 12px;
+}
+
+
+.sidebar h2 {
+    color: #d1d1d1;
 }

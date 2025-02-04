@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Availability</title>
+  <link rel="stylesheet" href="/css/availability.css">
+
+  <script src="/js/availability.js" defer></script>
+
+    <!-- Inne meta tagi i linki -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
+</head>
+<body>
+    <div id="app">
+      <div class="sidebar">
+        <!-- Include menu.ejs for sidebar navigation -->
+        <%- include('menu') %>
+      </div>
+      <div class="content">
+        <section class="full-container">
+          <span class="title">
+            <h1><span>Availability</span></h1>
+            <span>
+                <button class="green" onclick="showAddAvailabilityPopup()">
+                <img src="/icons/plus.png" alt="Add" class="white-icon">
+                </button>
+            </span>
+        </span>
+         <hr>
+        <section class="calendar">
+            <div id="calendar"></div> <!-- Element dla kalendarza -->
+        </section>
+        <h3>Your Availability</h3>
+        <ul id="availability-list">
+            <!-- Lista dostępności będzie ładowana dynamicznie -->
+        </ul>
+
+      </div>
+    </div>
+  </body>
+  
+</html>

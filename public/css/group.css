@@ -5,11 +5,7 @@
 h2, h3, h1 {
     color: #ffffff;
 }
-  
-ul {
-    list-style-type: none;
-    padding: 0;
-}
+
   
 .event-item, .member-item{
     background-color: #333;
@@ -40,7 +36,7 @@ background-color: #3e3e40;
 
 
 .event-details {
-    line-height: 1.5;
+  line-height: 1.5;
 }
   
 strong {
@@ -48,7 +44,7 @@ strong {
 }
   
 
-.badge-admin{
+.badge-founder{
   color:#fff;
   background-color:#007bff
 }
@@ -56,7 +52,7 @@ strong {
   color:#fff;
   background-color:#6c2080
 }
-.badge-cofounder{
+.badge-moderator{
   color:#fff;
   background-color:rgb(184, 133, 38)
 }
@@ -74,7 +70,7 @@ strong {
 .badge{
   display:inline-block;
   padding:.75em .550em;
-  font-size:80%;
+  font-size:90%;
   font-weight:500;
   line-height:1;
   text-align:center;

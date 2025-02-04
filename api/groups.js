@@ -23,7 +23,7 @@ async function getGroups() {
 async function getGroupInfo(groupId) {
   try {
     const response = await apiClient.get(`/groups/${groupId}`);
-    const groupName =response.data.name;
+    const groupName = response.data.name;
     return groupName;
   } catch (error) {
     console.error('Błąd podczas pobierania informacji o grupie:', error.message);

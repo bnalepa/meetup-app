@@ -28,9 +28,9 @@
     <nav>
         <ul>
             <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Debt</a></li>
+            <!-- <li><a href="#"><i class="fas fa-file-invoice-dollar"></i> Debt</a></li> -->
             <li><a href="/meetings"><i class="fas fa-users"></i> Meetings</a></li>
-            <li><a href="#"><i class="fas fa-calendar-alt"></i> Availability</a></li>
+            <li><a href="/availability"><i class="fas fa-calendar-alt"></i> Availability</a></li>
             <li><a href="#"><i class="fas fa-map-marker-alt"></i> Places</a></li>
         </ul>
     </nav>
@@ -39,7 +39,7 @@
         <h3>Groups</h3>
         <ul class="groups-list">
             <% groups.forEach(group => { %>
-                <li><a href="/groups/<%= group.id %>/view"><i class="fas fa-users"></i> <%= group.name %></a></li>
+                <li><a href="/groups/<%= group.id.value %>/view"><i class="fas fa-users"></i> <%= group.name %></a></li>
             <% }) %>
         </ul>
     </section>
@@ -55,7 +55,7 @@
             <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
             <li><a href="#"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
-        <button onclick="showPopup('Test Popup', 'This is a test popup.', 'ADDD', 'Back', () => alert('OK clicked!'), () => alert('Cancel clicked!'));">
+        <button onclick="showPopup('Test Popup', 'This is a test popup.', 'Confirm', 'Back', () => alert('OK clicked!'), () => alert('Cancel clicked!'));">
             Show Pop-up
         </button>
     </nav>
