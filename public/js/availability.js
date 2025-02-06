@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
       events: function (fetchInfo, successCallback, failureCallback) {
-          fetch('/users/e0767d15-acc0-47ce-8e36-5e7b993ed633/availabilities')
+          fetch('/users/{a423cec6-39bd-eb69-59bb-403fdce6bb6d}/availabilities')
               .then(response => {
                   if (!response.ok) {
                       throw new Error('Failed to fetch availabilities');
@@ -47,44 +47,6 @@ function formatDate(dateString) {
 }
 
 
-
-// Funkcja do pobierania dostępności i wyświetlania listy pod kalendarzem
-async function loadUserAvailability() {
-  const availabilityList = document.getElementById('availability-list');
-
-  try {
-      const response = await fetch('/users/e0767d15-acc0-47ce-8e36-5e7b993ed633/availabilities');
-      if (!response.ok) {
-          throw new Error('Failed to fetch availabilities');
-      }
-      const availabilities = await response.json();
-
-      console.log("response", response);
-
-      // Czyszczenie listy przed załadowaniem nowych danych
-      availabilityList.innerHTML = "";
-
-      if (availabilities.length === 0) {
-          availabilityList.innerHTML = "<p>No availability added.</p>";
-          return;
-      }
-
-      availabilities.forEach(availability => {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `
-              <span>${new Date(availability.startTime).toLocaleString()} - ${new Date(availability.endTime).toLocaleString()}</span>
-              <button class="red" onclick="deleteAvailability('${availability.availabilityId}')">
-                  <img src="/icons/delete.png" alt="Delete" class="white-icon">
-              </button>
-          `;
-          availabilityList.appendChild(listItem);
-      });
-
-  } catch (error) {
-      console.error('Error fetching availability:', error.message);
-      availabilityList.innerHTML = "<p>Failed to load availability.</p>";
-  }
-}
 
   
 
@@ -188,7 +150,6 @@ function showDeleteAvailabilityPopup(availabilityId) {
 
 async function deleteAvailability(availabilityId) {
   const userId = 'e0767d15-acc0-47ce-8e36-5e7b993ed633';
-  console.log(availabilityId,userId)
   try {
       const response = await fetch(`/users/${userId}/availabilities/${availabilityId}`, {
           method: 'DELETE',

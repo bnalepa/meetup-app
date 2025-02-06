@@ -37,7 +37,21 @@
         </section>
         <h3>Your Availability</h3>
         <ul id="availability-list">
-            <!-- Lista dostępności będzie ładowana dynamicznie -->
+          <% if (userAvailability.length === 0) { %>
+            <p>No availability added.</p>
+          <% } else { %>
+            <% userAvailability.forEach(availability => { %>
+              <li id="availability-<%= availability.availabilityId.value %>">
+                <span>
+                  <%= new Date(availability.startTime).toLocaleString() %> - 
+                  <%= new Date(availability.endTime).toLocaleString() %>
+                </span>
+                <button class="red" onclick="deleteAvailability('<%= availability.availabilityId.value %>')">
+                  <img src="/icons/delete.png" alt="Delete" class="white-icon">
+                </button>
+              </li>
+            <% }) %>
+          <% } %>
         </ul>
 
       </div>

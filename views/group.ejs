@@ -6,8 +6,10 @@
   <title>Group Details</title>
   <link rel="stylesheet" href="/css/group.css">
 
-  <script src="/js/groups.js" defer></script>
 
+  <script src="/js/groups.js" defer></script>
+  <script src="/js/venue.js" defer></script>
+  <script src="/js/votes.js" defer></script>
 </head>
 <body>
     <div id="app">
@@ -38,7 +40,6 @@
                             <img src="/icons/plus.png" alt="Add" class="white-icon">
                         </button>
                     </span>
-                    
                     <ul>
                         <% if (members && members.length > 0) { %>
                         <% members.forEach(member => { %>
@@ -70,47 +71,214 @@
                     </ul>
                 </section>
                 <section class="events">
-                <h2>Upcoming Events</h2>
+                <span class="title"><h2>Upcoming Event</h2>
+                    <button class="green" onclick="showAddEventPopup('<%= groupId %>')">
+                        <img src="/icons/plus.png" alt="Add" class="white-icon">
+                    </button></span>
+                
                 <ul>
                     <% if (events && events.length > 0) { %>
                     <% events.forEach(event => { %>
                         <li class="event-item">
-                        <div class="event-details" id=<%=event.eventId.value%>>
-                            
-                            <span>Status: <%=event.eventStatus %></span><br>
+                        <div class="event-details" id=<%=event.eventId.value%>
+                            <!-- Status wydarzenia w formie graficznym -->
+                            <div class="event-status">
+                                <div class="phase <%= event.eventStatus === 0 ? 'active' : '' %>">Inviting</div>
+                                <div class="phase <%= event.eventStatus === 1 ? 'active' : '' %>">Planning</div>
+                                <div class="phase <%= event.eventStatus === 2 ? 'active' : '' %>">Ongoing</div>
+                                <div class="phase <%= event.eventStatus === 3 ? 'active' : '' %>">Complete</div>
+                            </div>
                             <strong><h2><%= event.name %></h2></strong>
                             <span>Description: <i><%= event.description %></i></span><br>
-                            <span>Location: <%= event.location %></span><br>
-                            <span>Start Date: <%= new Date(event.startDate).toLocaleString() %></span><br>
-                            <% if (true) { %> <!-- Ukrywamy przyciski dla Adminów -->
+                            <span> <% if (event.venue && event.venue.venueId) { %>
+                                    <span class="venue-selected">
+                                        ✅ Place: <strong><%= event.venue.name %></strong> - <%= event.venue.location %>
+                                    </span>
+                                <% } else { %>
+                                    <span class="venue-not-selected">
+                                        ❌ Place: No venue selected yet.
+                                    </span>
+                                <% } %>
+                            </span><br> <% 
+                                let formattedStartDate = "Not set"; 
+                                let startDateString = `❌ Start Date: ${formattedStartDate}` 
+                                if (event.startDate && !isNaN(new Date(event.startDate).getTime()) &&  event.startDate != '2010-01-01T01:00:00+01:00') { 
+                                    const startDateObj = new Date(event.startDate);
+                                    const invalidDate = new Date("2010-01-01T01:00:00Z");
+                            
+                                    if (startDateObj.getTime() !== invalidDate.getTime()) {
+                                        formattedStartDate = startDateObj.toLocaleString();
+                                    }
+                                    startDateString = `✅ Start Date: ${formattedStartDate}`
+                                }
+                            %>
+                            
+                            <span> <%= startDateString %></span><br>
+                            </span><br>
+                            <% if (phaseId == 1) { %> 
+                                                                                
+                                <% if (event.proposedVenues && event.proposedVenues.length > 0) { %>
+                                    <h3>Proposed Venues</h3>
+                                    <ul>
+                                        <% event.proposedVenues.forEach(venue => { %>
+                                            <li class="event-item">
+                                                <span><strong><%= venue.name %></strong> - <%= venue.location %></span>
+
+                                                <% events.forEach(event => { %>
+                                                    <div >
+                                                        <% if (event.votingResults && Object.keys(event.votingResults).length > 0) { %>
+                                                            <% Object.values(event.votingResults).forEach(votingResult => { %>
+                                                                <% if (votingResult.venueId && votingResult.venueId.value === venue.id.value ) { %>
+                                                                    <span>
+                                                                        <button class="red" onclick="upVote('<%= event.eventId.value %>', '<%= votingResult.venueId.value %>')">
+                                                                            <img src="/icons/upVote.png" alt="Upvote" class="white-icon">
+                                                                        </button>
+                                                                        <button class="red" onclick="downVote('<%= event.eventId.value %>', '<%= votingResult.venueId.value %>')">
+                                                                            <img src="/icons/downVote.png" alt="Downvote" class="white-icon">
+                                                                        </button>
+                                                                        <button class="blue" onclick="selectVenueForEvent('<%= event.eventId.value %>', '<%= venue.id.value %>')">
+                                                                            <img src="/icons/select.png" alt="Select" class="white-icon">
+                                                                        </button>
+                                                                    </span>
+                                                                    <% if (votingResult.negativeVotes != 0 || votingResult.positiveVotes != 0) { %>
+                                                                    <div class="voting-bar">
+                                                                        <div class="voting-bar-green" style="width: <%= votingResult.positivePercentage %>%;"></div>
+                                                                        <div class="voting-bar-red" style="width: <%= 100 - votingResult.positivePercentage %>%;"></div>
+                                                                    </div>
+                                                                    <% } else { %>
+                                                                        <div class="voting-bar-green" style="width:100%;"></div>
+                                                                    <% } %>
+                                                                    <div class="voting-results">
+                                                                        <span>Yes: <%= votingResult.positiveVotes %></span>
+                                                                        <span>No: <%= votingResult.negativeVotes %></span>
+                                                                    </div>
+                                                                <% } %>
+                                                                
+                                                            <% }) %>
+
+                                                        <% } else { %>
+                                                            <p>No voting results available.</p>
+                                                        <% } %>
+                                                    </div>
+                                                <% }) %>
+                                            
+                                        <% }) %>
+                                    </ul>
+                                <% } else { %>                          
+                                        <span><strong>There are no venues available for voting.</strong></span>
+                                <% } %>   
+                            
+                            <% } %>
+                            <br>
+                            <% if (true) { %>
                                 <span>
+                                    
                                 <button class="red" onclick="showDeleteEventPopup('<%= event.eventId.value %>')">
                                     <img src="/icons/delete.png" alt="Delete" class="white-icon">
                                 </button>
                                 </span>
-                                <% } %>
+                             <% } %>
                             <span>
                                 <button class="red" onclick="showMoveEventPopup('<%= event.eventId.value %>')">
                                     <img src="/icons/nextPhase.png" alt="Go to next phase" class="white-icon">
                                 </button>
                             </span>
-                        </div>
-                        </li>
-                    <% }) %>
+
+                            <% if (phaseId == 2) { %> 
+                            <button class="green" onclick="showBestMeetingTimePopup('<%= groupId %>', '<%= event.eventId.value %>')">
+                                <img src="/icons/calendar.png" alt="Find Best Meeting Time" class="white-icon">
+                            </button>
+                            <% } %>
+                        
+                        <% }) %>
                     <% } else { %>
-                    <li>No events for this group.</li>
-                    <% } %>
-                </ul>
+                <li>No events for this group.</li>
+                
+                <% } %>
+            </li>
+        </li>
+    </div>
+    </ul>
+    </section>
+        </section>
+            <section class="small-container">
+                <section class="venues">
+                    <span class="title">
+                        <h2>Venues in group</h2>
+                        <button class="green" onclick="showAddVenuePopup('<%= groupId %>')">
+                            <img src="/icons/plus.png" alt="Add" class="white-icon">
+                        </button>
+                    </span>
+                    <ul id="venue-list">
+                        <% venues.forEach(venue => { %>
+                        <li class="event-item">
+                            <span><strong><%= venue.name %></strong> <br> <%= venue.location %></span>
+                            <span>
+                                <% if (phaseId == 1) { %>   
+                                <button class="blue" onclick="proposeVenueForEvent('<%= eventId %>', '<%= venue.id.value %>')">
+                                    <img src="/icons/select.png" alt="Select" class="white-icon">
+                                </button>
+                                <% } %>
+                                <button class="blue" onclick="showCopyVenuePopup('<%= venue.id.value %>', '<%= groupId %>')">
+                                    <img src="/icons/move.png" alt="Move" class="white-icon">
+                                </button>
+                                <button class="red" onclick="showDeleteVenuePopup('<%= venue.id.value %>')">
+                                    <img src="/icons/delete.png" alt="Delete" class="white-icon">
+                                </button>
+                            </span>
+                        </li>
+                        <% }) %>
+                    </ul>
                 </section>
 
-            </section>
-            <section class="small-container">
                 <section class="History">
                 <h2>History</h2>
-                <ul>
-
-                    
-                </ul>
+                <% if (historyEvents.length === 0) { %>
+                    <p>No historical events available.</p>
+                  <% } else { %>
+                    <ul>
+                      <% historyEvents.forEach(event => { %>
+                        <li class="event-item">
+                          <div class="event-details" id="<%= event.id.value %>">
+                            <strong><h2><%= event.name %></h2></strong>
+                            <span>Description: <i><%= event.description %></i></span><br>
+                            <span>
+                              <% if (event.venueName && event.venueLocation) { %>
+                                <span class="venue-selected">
+                                  Place: <strong><%= event.venueName %></strong> - <%= event.venueLocation %>
+                                </span>
+                              <% } else { %>
+                                <span class="venue-not-selected">
+                                  Place: No venue selected.
+                                </span>
+                              <% } %>
+                            </span><br>
+                              <span>Completed Date: <%= event.completedDate.toLocaleString()  %></span><br>
+                            <br>
+                            <!-- Wyniki głosowania (jeśli dostępne) -->
+                            <% if (event.votingResults && Object.keys(event.votingResults).length > 0) { %>
+                              <h3>Voting Results</h3>
+                              <ul>
+                                <% Object.values(event.votingResults).forEach(votingResult => { %>
+                                  <li>
+                                    <span><strong><%= votingResult.venueName %></strong> - <%= votingResult.location %></span>
+                                    <div class="voting-bar">
+                                      <div class="voting-bar-green" style="width: <%= votingResult.positivePercentage %>%;"></div>
+                                      <div class="voting-bar-red" style="width: <%= 100 - votingResult.positivePercentage %>%;"></div>
+                                    </div>
+                                    <div class="voting-results">
+                                      <span>Yes: <%= votingResult.positiveVotes %></span>
+                                      <span>No: <%= votingResult.negativeVotes %></span>
+                                    </div>
+                                  </li>
+                                <% }) %>
+                              </ul>
+                            <% } %>
+                          </div>
+                        </li>
+                      <% }) %>
+                    </ul>
+                  <% } %>
                 </section>
             </section>
         </div>

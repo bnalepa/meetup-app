@@ -1,4 +1,3 @@
-
 function showAddMemberPopup(groupId) {
     const popupContent = `<input type="text" id="inputMember" placeholder="Enter User Email">`
     showPopup(
@@ -157,7 +156,7 @@ function showDeleteEventPopup(eventId) {
 
     // Wywołaj funkcję do wyświetlenia pop-upu
     showPopup(
-        'Delete Gruop', 
+        'Delete Group', 
         popupContent, 
         'Yes',
         'No', 
@@ -251,13 +250,8 @@ function showMoveEventPopup(eventId) {
         'Yes',
         'No',
         async () => {
-            try {
-                await moveEventToNextPhase(eventId);
-                alert("Event successfully moved to the next phase!");
-                location.reload(); // Odświeżenie widoku po udanej zmianie
-            } catch (error) {
-                alert("Failed to move event. Please try again.");
-            }
+            await moveEventToNextPhase(eventId);
+            location.reload(); // Odświeżenie widoku po udanej zmianie
         }
     );
 }
@@ -271,21 +265,86 @@ async function moveEventToNextPhase(eventId) {
             }
         });
 
-        if (!response.ok) {
-            throw new Error(`Failed to move event to the next phase. Status: ${response.status}`);
-        }
-
-        // Sprawdzenie, czy serwer zwrócił treść (nie pustą)
+        // Pobieramy treść odpowiedzi
         const text = await response.text();
-        const data = text ? JSON.parse(text) : null; // Jeśli tekst jest pusty, zwracamy null
+        const data = text ? JSON.parse(text) : {};
+        if (!response.ok) {
+            const errorDetail = data.error || `Failed to move event. Status: ${error}`;
+            throw new Error(errorDetail);
+        }
 
         return data;
     } catch (error) {
-        console.error('Error moving event to next phase:', error.message);
-        alert('Error: ' + error.message);
+        console.error('Error moving event to next phase:', error);
+        alert(error);
         throw error;
     }
 }
+
+
+// Mockowany użytkownik
+const userId = 'a423cec6-39bd-eb69-59bb-403fdce6bb6d';
+
+// Funkcja do wyświetlania popupu dodawania wydarzenia
+function showAddEventPopup(groupId) {
+    const popupContent = `
+        <form id="add-event-form">
+            <label for="event-name">Event Name:</label>
+            <input type="text" id="event-name" required><br>
+
+            <label for="event-description">Description:</label>
+            <textarea id="event-description" required></textarea><br>
+        </form>
+    `;
+
+    showPopup(
+        'Add New Event',
+        popupContent,
+        'Add',
+        'Cancel',
+        () => addEvent(groupId)
+    );
+}
+
+
+// Funkcja do dodawania nowego wydarzenia
+async function addEvent(groupId) {
+  const eventName = document.getElementById('event-name').value;
+  const eventDescription = document.getElementById('event-description').value;
+
+  const eventData = {
+    name: eventName,
+    description: eventDescription,
+    isRecurring: false,
+    createdBy: {
+      value: userId // Mockowany użytkownik
+    },
+    groupId: {
+      value: groupId // ID grupy
+    }
+  };
+
+  try {
+    const response = await fetch('/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add event');
+    }
+    const newEvent = await response.json();
+    location.reload(); // Odśwież stronę, aby zobaczyć nowe wydarzenie
+  } catch (error) {
+    console.error('Error adding event:', error.message);
+    alert('Failed to add event. Please try again.');
+  }
+}
+
+
 
 
 

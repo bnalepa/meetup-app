@@ -1,9 +1,4 @@
-.left-panel {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    margin-right: 20px; 
-}
+
 /* Kalendarz */
 .calendar {
     background-color: #2e2e30;
@@ -36,15 +31,24 @@
 /* Menu */
 
 
-button.join-btn {
-    background-color: #28a745;
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+.calendar-container {
+    min-width: 65%;
+    min-height: 80%;
+    background-color: #2e2e30;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 10px;
 }
+
+.upcoming-meetups-container {
+  min-width: 25%; 
+  background-color: #2e2e30;
+  min-height: 80%;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 10px;
+}
+
 
 button.join-btn:hover {
     background-color: #218838;
@@ -123,4 +127,39 @@ button.accept {
 
 button:hover {
     background-color: #555;
+}
+
+
+#calendar {
+    max-width: 900px;
+    margin: 0 auto;
+}
+  
+  .fc-event {
+    background-color: #378006; /* Kolor tła wydarzenia */
+    border: none; /* Usuń obramowanie */
+}
+
+.title {
+    vertical-align: middle ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+
+label {
+  margin: 5px;
+}
+
+.fc-event-time, .fc-daygrid-event-dot {
+  display: none;
+}
+
+.fc-event-title{
+  font-size: 8px;
+}
+
+.meetup-item{
+    flex-direction: column;
 }

@@ -23,6 +23,7 @@
     padding: 20px;
     z-index: 1000;
     text-align: center;
+    line-height: 2;
 }
 
 /* Tytuł pop-upu */

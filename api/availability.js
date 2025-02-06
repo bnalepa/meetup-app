@@ -13,7 +13,6 @@ const apiClient = axios.create({
 async function getUserAvailability(userId) {
   try {
       const response = await apiClient.get(`/users/${userId}/availabilities`);
-      console.log(response)
       return response.data;
   } catch (error) {
       console.error('Error fetching user availability:', error.message);
@@ -21,8 +20,19 @@ async function getUserAvailability(userId) {
   }
 }
 
+// Funkcja do pobierania nadchodzących wydarzeń
+async function fetchUpcomingEvents(userId) {
+  try {
+    const response = await apiClient.get(`/users/events/${userId}/upcoming`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching upcoming events:', error.message);
+    return []; // Zwróć pustą tablicę w przypadku błędu
+  }
+}
 
 module.exports = {
   apiClient,
-  getUserAvailability
+  getUserAvailability,
+  fetchUpcomingEvents
 };
