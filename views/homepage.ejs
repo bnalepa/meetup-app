@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeetUp - Home</title>
-    <link rel="stylesheet" href="/css/home.css">
-    <link rel="stylesheet" href="/css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeetUp - Home</title>
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js" defer></script>
+  <script src="/js/home.js" defer></script> <!-- Nowy plik JS dla strony głównej -->
 </head>
 <body>
-        <div id="app">
-          <div class="sidebar">
-            <!-- Include menu.ejs for sidebar navigation -->
-            <%- include('menu') %>
-          </div>
-          <div class="content">
-            <section class="calendar-container">
-                <span class="title">
-                    <h1><span>Your timetable</span></h1>
-            </section>
-
-            <!-- Sekcja z nadchodzącymi spotkaniami -->
-            <section class="upcoming-meetups-container">
-                <h3>Upcoming meetups</h3>
-                <% if (upcomingEvents.length === 0) { %>
-                  <p>No upcoming meetups.</p>
-                <% } else { %>
-                  <% upcomingEvents.forEach(event => { %>
-                    <span><%= event.venue ? event.venue.name : 'No group' %></span>
-                    <div class="meetup-item">
-                      <span><strong><%= event.name %></strong></span> 
-                      <span><i><%= event.description %></i></span> <br>
-                      <span><%= new Date(event.startDate).toLocaleString() %></span>
-                      <span><%= event.venue ? event.venue.location : 'No location' %></span>
-                    </div>
-                  <% }) %>
-                <% } %>
-              </section>
-    
-          </div>
+  <div id="app">
+    <div class="sidebar">
+      <%- include('menu') %>
     </div>
+    <div class="content">
+      <section class="calendar-container">
+        <span class="title">
+          <h1><span>Your timetable</span></h1>
+        </span>
+        <hr>
+        <div id="calendar"></div> <!-- Element dla kalendarza -->
+      </section>
+
+      <!-- Sekcja z nadchodzącymi spotkaniami -->
+      <section class="upcoming-meetups-container">
+        <h3>Upcoming meetups</h3>
+        <% if (upcomingEvents.length === 0) { %>
+          <p>No upcoming meetups.</p>
+        <% } else { %>
+          <% upcomingEvents.forEach(event => { %>
+            <div class="meetup-item">
+              <span><strong><%= event.name %></strong></span>
+              <span><i><%= event.description %></i></span><br>
+              <span>Start: <%= new Date(event.startDate).toLocaleString() %></span><br>
+              <span>Place: <%= event.venue ? event.venue.name : 'No group' %></span><br>
+              <span><%= event.venue ? event.venue.location : 'No location' %></span>
+            </div>
+          <% }) %>
+        <% } %>
+      </section>
+    </div>
+  </div>
 </body>
-      
 </html>

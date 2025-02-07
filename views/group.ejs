@@ -52,10 +52,10 @@
                                 </span>
                                 <% if (member.role !== 0) { %> <!-- Ukrywamy przyciski dla Adminów -->
                                 <span>
-                                <button class="blue" onclick="showChangeRolePopup('<%= member.id %>', '<%= member.role %>')">
+                                <button class="blue" onclick="showChangeRolePopup('<%= member.memberId %>', '<%= member.role %>')">
                                     <img src="/icons/settings.png" alt="Add" class="white-icon">
                                 </button>
-                                <button class="red" onclick="showRemoveMemberPopup('<%= member.id %>')">
+                                <button class="red" onclick="showRemoveMemberPopup('<%= member.memberId %>')">
                                     <img src="/icons/minus.png" alt="Add" class="white-icon">
                                 </button>
                                 </span>
@@ -253,27 +253,10 @@
                                 </span>
                               <% } %>
                             </span><br>
-                              <span>Completed Date: <%= event.completedDate.toLocaleString()  %></span><br>
+                            <% const date = event.completedDate.toLocaleString().split(".")[0].split("T")  
+                                const outputDate = `${date[0]} ${date[1]}`%>
+                              <span>Completed Date: <%= outputDate %></span><br>
                             <br>
-                            <!-- Wyniki głosowania (jeśli dostępne) -->
-                            <% if (event.votingResults && Object.keys(event.votingResults).length > 0) { %>
-                              <h3>Voting Results</h3>
-                              <ul>
-                                <% Object.values(event.votingResults).forEach(votingResult => { %>
-                                  <li>
-                                    <span><strong><%= votingResult.venueName %></strong> - <%= votingResult.location %></span>
-                                    <div class="voting-bar">
-                                      <div class="voting-bar-green" style="width: <%= votingResult.positivePercentage %>%;"></div>
-                                      <div class="voting-bar-red" style="width: <%= 100 - votingResult.positivePercentage %>%;"></div>
-                                    </div>
-                                    <div class="voting-results">
-                                      <span>Yes: <%= votingResult.positiveVotes %></span>
-                                      <span>No: <%= votingResult.negativeVotes %></span>
-                                    </div>
-                                  </li>
-                                <% }) %>
-                              </ul>
-                            <% } %>
                           </div>
                         </li>
                       <% }) %>

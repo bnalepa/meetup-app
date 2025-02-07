@@ -163,3 +163,7 @@ label {
 .meetup-item{
     flex-direction: column;
 }
+
+.upcoming-event {
+    background-color: rgb(24, 72, 88);
+}

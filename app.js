@@ -85,17 +85,20 @@ app.get('/groups/:id/view', async (req, res) => {
     // Pobierz szczegółowe informacje o członkach (w tym ich role)
     const detailedMembers = await Promise.all(
       members.map(async (member) => {
+        const userRoleData = await getUserRole(member.userId.value, groupId);
         try {
-          const role = await getUserRole(member.userId.value);
+        
           return {
             id: member.userId.value,
-            role: role , // Domyślna rola, jeśli brak danych
+            memberId: userRoleData.memberId,
+            role: userRoleData.role, 
             ...member
           };
         } catch (error) {
           console.error("Error fetching user role:", error.message);
           return {
             id: member.userId.value || '0',
+            memberId: userRoleData?.id,
             role: '2',
             ...member
           };
@@ -142,7 +145,6 @@ app.post('/memberships', async (req, res) => {
 
     // Obsługa odpowiedzi
     const addedMember = response.data;
-    console.log('Member successfully added:', addedMember);
 
     // Zwracamy odpowiedź z sukcesem
     res.status(201).json(addedMember);
@@ -155,7 +157,6 @@ app.post('/memberships', async (req, res) => {
 app.put('/memberships/:id', async (req, res) => {
   const { id } = req.params; // ID członkostwa z URL
   const { role } = req.body; // Nowa rola z treści żądania
-
   try {
       const response = await apiClient.put(`/memberships/${id}`, { role }); // Wywołanie API backendowego
       if (response.status === 204) {
@@ -229,7 +230,6 @@ app.post('/users/:userId/availabilities', async (req, res) => {
   const { startTime, endTime } = req.body;
 
   userId = mockUserId;
-  console.log(      startTime, endTime, mockUserId)
   try {
       const response = await apiClient.post(`/users/${userId}/availabilities`, {
           startTime,
@@ -254,7 +254,6 @@ app.delete('/users/:userId/availabilities/:availabilityId', async (req, res) => 
   //const { userId, availabilityId } = req.params;
   const { availabilityId } = req.params;
   userId = mockUserId;
-  console.log(req.params)
   try {
       const response = await apiClient.delete(`/users/availabilities/${availabilityId}`);
 
@@ -502,7 +501,7 @@ app.get('/groups/:id/view', async (req, res) => {
     const detailedMembers = await Promise.all(
       members.map(async (member) => {
         try {
-          let role = await getUserRole(member.userId.value);
+          let role = await getUserRole(member.userId.value, groupId);
           console.log(role)
           return {
             id: member.userId.value,
@@ -613,6 +612,28 @@ app.get('/', async (req, res) => {
   } catch (error) {
     console.error('Error loading homepage:', error.message);
     res.status(500).send('Error loading homepage');
+  }
+});
+
+// Endpoint do pobierania dostępności
+app.get('/users/:userId/availabilities', async (req, res) => {
+  try {
+    const availabilities = await getUserAvailability(mockUserId);
+    res.json(availabilities);
+  } catch (error) {
+    console.error('Error fetching availabilities:', error.message);
+    res.status(500).json({ error: 'Failed to fetch availabilities' });
+  }
+});
+
+// Endpoint do pobierania nadchodzących wydarzeń
+app.get('/users/events/:userId/upcoming', async (req, res) => {
+  try {
+    const upcomingEvents = await fetchUpcomingEvents(mockUserId);
+    res.json(upcomingEvents);
+  } catch (error) {
+    console.error('Error fetching upcoming events:', error.message);
+    res.status(500).json({ error: 'Failed to fetch upcoming events' });
   }
 });
 

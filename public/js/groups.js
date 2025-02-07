@@ -68,7 +68,6 @@ function showChangeRolePopup(memberId, currentRole) {
 // Funkcja do aktualizacji roli
 async function updateRole(memberId) {
     const newRole = document.getElementById('newRole').value;
-    
     try {
         const response = await fetch(`/memberships/${memberId}`, {
             method: 'PUT',
@@ -202,13 +201,10 @@ function showRemoveMemberPopup(memberId) {
         'Yes',
         'No',
         async () => {
-            try {
+
                 await removeMember(memberId);
-                alert("User successfully removed!");
-                location.reload(); // Odświeżenie widoku po usunięciu użytkownika
-            } catch (error) {
-                alert("Failed to remove user. Please try again.");
-            }
+                location.reload(); 
+
         }
     );
 }

@@ -31,28 +31,29 @@ async function getGroupInfo(groupId) {
   }
 }
 
-async function getUserRole(userId) {
+async function getUserRole(userId, groupId) {
   try {
     // Pobierz wszystkie członkostwa
     const response = await apiClient.get(`/memberships`);
     const allMemberships = response.data;
 
     // Filtruj członkostwa, aby znaleźć te, które pasują do userId
-    const userMemberships = allMemberships.filter(member => member.userId.value === userId);
-
-    // Jeśli znaleziono członkostwa, zwróć rolę użytkownika
+    const userMemberships = allMemberships.filter(member => member.userId.value === userId && member.groupId.value == groupId);
+    // Jeśli znaleziono członkostwa, zwróć obiekt zawierający `id.value` oraz `role`
     if (userMemberships.length > 0) {
-      // Zwróć rolę z pierwszego pasującego członkostwa (zakładamy, że użytkownik ma tylko jedną rolę w grupie)
-      return userMemberships[0].role;
+      return {
+        memberId: userMemberships[0].id.value, // ID członkostwa
+        role: userMemberships[0].role    // Rola użytkownika
+      };
     } else {
-      // Jeśli nie znaleziono członkostwa, zwróć null lub odpowiedni kod błędu
-      return null;
+      return null; // Jeśli nie znaleziono członkostwa, zwróć null
     }
   } catch (error) {
     console.error('Błąd podczas pobierania informacji o członkostwach:', error.message);
     throw error;
   }
 }
+
 
 // Funkcja do pobierania członków dla danej grupy (filtrowanie po stronie aplikacji)
 async function getGroupMembers(groupId) {

@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
                   return response.json();
               })
               .then(events => {
-                  console.log("Załadowane wydarzenia:", events);
                   successCallback(events.map(event => ({
                       //id: event.availabilityId,
                       title: `🕒 ${formatDate(event.startTime)} - ${formatDate(event.endTime)}`, // Formatowany tekst
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
               });
       },
       eventClick: function (info) {
-          alert('Wydarzenie: ' + info.event.title);
+          alert(info.event.title);
       }
   });
 
@@ -126,8 +125,7 @@ async function addAvailability() {
           throw new Error('Failed to add availability');
       }
 
-      alert('Availability added successfully!');
-      location.reload(); // Odświeżenie strony po dodaniu dostępności
+      location.reload();
   } catch (error) {
       console.error('Error adding availability:', error.message);
       alert('Failed to add availability. Please try again.');

@@ -14,7 +14,11 @@ function showAddVenuePopup(groupId) {
         popupContent,
         'Save',
         'Cancel',
-        () => addVenue(groupId)
+        async () => {
+            await addVenue(groupId);
+            location.reload(); 
+
+    }
     );
 }
 
