@@ -1,8 +1,6 @@
 async function vote(eventId, venueId, decision) {
-    const userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6"; // 🔹 ID użytkownika (powinno być dynamiczne!)
 
     const payload = {
-        userId: { value: userId },
         venueId: { value: venueId },
         decision: decision // true = upVote, false = downVote
     };

@@ -23,22 +23,28 @@
             <section class="big-container">
                 <span class="title">
                 <h1><span><%=groupName%></span></h1>
-                        <span>
+                    <span><% if (loggedUserRole <= 1) { %> 
+                        
                             <button class="blue" onclick="showRenameGroupPopup('<%= groupId %>','<%= groupName %>')">
                                 <img src="/icons/rename.png" alt="Rename" class="white-icon">
                             </button>
+                            <% } %>
+                            <% if (loggedUserRole == 0) { %> 
                             <button class="red" onclick="showDeleteGroupPopup('<%= groupId %>')">
                                 <img src="/icons/delete.png" alt="Delete" class="white-icon">
                             </button>
-                        </span>
+                            <% } %>
+                    </span> 
                 </span>
                 <hr>
                 <section class="members">
                     <span class="title">
                         <h2>Members</h2>
+                        <% if (loggedUserRole <= 1) { %> 
                         <button class="green" onclick="showAddMemberPopup('<%= groupId %>')">
                             <img src="/icons/plus.png" alt="Add" class="white-icon">
                         </button>
+                        <% } %>
                     </span>
                     <ul>
                         <% if (members && members.length > 0) { %>
@@ -50,7 +56,7 @@
                                     <b><%= member.role === 0 ? 'Founder' : member.role === 1 ? 'Moderator' : 'Member' %>
                                     </b>
                                 </span>
-                                <% if (member.role !== 0) { %> <!-- Ukrywamy przyciski dla Adminów -->
+                                <% if (member.role !== 0 && loggedUserRole <= 1) { %> <!-- Ukrywamy przyciski dla Adminów -->
                                 <span>
                                 <button class="blue" onclick="showChangeRolePopup('<%= member.memberId %>', '<%= member.role %>')">
                                     <img src="/icons/settings.png" alt="Add" class="white-icon">
@@ -72,10 +78,12 @@
                 </section>
                 <section class="events">
                 <span class="title"><h2>Upcoming Event</h2>
+                    <% if (loggedUserRole <= 1) { %> 
                     <button class="green" onclick="showAddEventPopup('<%= groupId %>')">
                         <img src="/icons/plus.png" alt="Add" class="white-icon">
-                    </button></span>
-                
+                    </button>
+                    <% } %>
+                </span>
                 <ul>
                     <% if (events && events.length > 0) { %>
                     <% events.forEach(event => { %>
@@ -170,24 +178,25 @@
                             
                             <% } %>
                             <br>
-                            <% if (true) { %>
+                                <% if (loggedUserRole <= 1) { %> 
+                                    <span>
+                                        
+                                    <button class="red" onclick="showDeleteEventPopup('<%= event.eventId.value %>')">
+                                        <img src="/icons/delete.png" alt="Delete" class="white-icon">
+                                    </button>
+                                    </span>
+                                
                                 <span>
-                                    
-                                <button class="red" onclick="showDeleteEventPopup('<%= event.eventId.value %>')">
-                                    <img src="/icons/delete.png" alt="Delete" class="white-icon">
-                                </button>
+                                    <button class="red" onclick="showMoveEventPopup('<%= event.eventId.value %>')">
+                                        <img src="/icons/nextPhase.png" alt="Go to next phase" class="white-icon">
+                                    </button>
                                 </span>
-                             <% } %>
-                            <span>
-                                <button class="red" onclick="showMoveEventPopup('<%= event.eventId.value %>')">
-                                    <img src="/icons/nextPhase.png" alt="Go to next phase" class="white-icon">
-                                </button>
-                            </span>
 
-                            <% if (phaseId == 2) { %> 
-                            <button class="green" onclick="showBestMeetingTimePopup('<%= groupId %>', '<%= event.eventId.value %>')">
-                                <img src="/icons/calendar.png" alt="Find Best Meeting Time" class="white-icon">
-                            </button>
+                                <% if (phaseId == 2) { %> 
+                                <button class="green" onclick="showBestMeetingTimePopup('<%= groupId %>', '<%= event.eventId.value %>')">
+                                    <img src="/icons/calendar.png" alt="Find Best Meeting Time" class="white-icon">
+                                </button>
+                                    <% } %>
                             <% } %>
                         
                         <% }) %>
@@ -209,25 +218,32 @@
                             <img src="/icons/plus.png" alt="Add" class="white-icon">
                         </button>
                     </span>
-                    <ul id="venue-list">
-                        <% venues.forEach(venue => { %>
+                    <ul id="venue-list"><% if (venues.length === 0) { %>
+                        No venues in group.
+                        <% } else { %>        
+                    <% venues.forEach(venue => { %>
                         <li class="event-item">
                             <span><strong><%= venue.name %></strong> <br> <%= venue.location %></span>
                             <span>
-                                <% if (phaseId == 1) { %>   
-                                <button class="blue" onclick="proposeVenueForEvent('<%= eventId %>', '<%= venue.id.value %>')">
-                                    <img src="/icons/select.png" alt="Select" class="white-icon">
-                                </button>
+                                <% if (loggedUserRole <= 1) { %> 
+                                    <% if (phaseId == 1) { %>   
+                                    <button class="blue" onclick="proposeVenueForEvent('<%= eventId %>', '<%= venue.id.value %>')">
+                                        <img src="/icons/select.png" alt="Select" class="white-icon">
+                                    </button>
+                                    <% } %>
                                 <% } %>
                                 <button class="blue" onclick="showCopyVenuePopup('<%= venue.id.value %>', '<%= groupId %>')">
                                     <img src="/icons/move.png" alt="Move" class="white-icon">
                                 </button>
+                                <% if (loggedUserRole <= 1) { %> 
                                 <button class="red" onclick="showDeleteVenuePopup('<%= venue.id.value %>')">
                                     <img src="/icons/delete.png" alt="Delete" class="white-icon">
                                 </button>
+                                <% } %>
                             </span>
                         </li>
                         <% }) %>
+                    <% } %>   
                     </ul>
                 </section>
 

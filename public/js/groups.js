@@ -155,7 +155,7 @@ function showDeleteEventPopup(eventId) {
 
     // Wywołaj funkcję do wyświetlenia pop-upu
     showPopup(
-        'Delete Group', 
+        'Delete Event', 
         popupContent, 
         'Yes',
         'No', 
@@ -278,8 +278,6 @@ async function moveEventToNextPhase(eventId) {
 }
 
 
-// Mockowany użytkownik
-const userId = 'a423cec6-39bd-eb69-59bb-403fdce6bb6d';
 
 // Funkcja do wyświetlania popupu dodawania wydarzenia
 function showAddEventPopup(groupId) {
@@ -312,9 +310,6 @@ async function addEvent(groupId) {
     name: eventName,
     description: eventDescription,
     isRecurring: false,
-    createdBy: {
-      value: userId // Mockowany użytkownik
-    },
     groupId: {
       value: groupId // ID grupy
     }
@@ -339,6 +334,43 @@ async function addEvent(groupId) {
     alert('Failed to add event. Please try again.');
   }
 }
+
+
+// Funkcja wyświetlająca pop-up potwierdzający usunięcie grupy
+function showDeleteGroupPopup(groupId) {
+    const popupContent = `
+        <p>Are you sure you want to delete this group? This action cannot be undone.</p>
+    `;
+
+    showPopup(
+        'Delete Group',
+        popupContent,
+        'Yes, Delete',
+        'Cancel',
+        async () => {
+            await deleteGroup(groupId);
+            location.reload();
+        }
+    );
+}
+
+// Funkcja usuwająca grupę
+async function deleteGroup(groupId) {
+    try {
+        const response = await fetch(`/groups/${groupId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        location.href = "/";
+    } catch (error) {
+        console.error('Error deleting group:', error.message);
+        alert('Failed to delete group. Please try again.');
+    }
+}
+
 
 
 

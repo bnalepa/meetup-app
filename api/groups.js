@@ -10,15 +10,31 @@ const apiClient = axios.create({
 });
 
 // Funkcja do pobierania grup
-async function getGroups() {
+async function getGroups(userId) {
   try {
-    const response = await apiClient.get('/groups');
-    return response.data;
+    // Pobierz wszystkie grupy
+    const groupsResponse = await apiClient.get('/groups');
+    const allGroups = groupsResponse.data;
+
+    // Pobierz wszystkie członkostwa
+    const membershipsResponse = await apiClient.get('/memberships');
+    const allMemberships = membershipsResponse.data;
+
+    // Filtruj członkostwa, aby znaleźć tylko te, które należą do zalogowanego użytkownika
+    const userGroupIds = allMemberships
+      .filter(membership => membership.userId.value === userId) // Znajdź członkostwa użytkownika
+      .map(membership => membership.groupId.value); // Pobierz ID grup
+
+    // Filtruj grupy, pozostawiając tylko te, do których użytkownik należy
+    const userGroups = allGroups.filter(group => userGroupIds.includes(group.id.value));
+
+    return userGroups;
   } catch (error) {
     console.error('Błąd podczas pobierania grup:', error.message);
     throw error;
   }
 }
+
 
 async function getGroupInfo(groupId) {
   try {

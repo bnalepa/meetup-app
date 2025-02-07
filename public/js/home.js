@@ -73,4 +73,5 @@ document.addEventListener('DOMContentLoaded', function () {
       minute: '2-digit',// np. "00"
       hour12: false     // Format 24h
     });
+    
   }

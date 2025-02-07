@@ -2,9 +2,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <script src="/js/popup.js" defer></script>
+<script src="/js/auth.js" defer></script>
+<script src="/js/createGroups.js" defer></script>
 <link rel="stylesheet" href="/css/popup.css">
 
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const redirectAlert = getCookie('redirectAlert');
+      if (redirectAlert) {
+        alert(decodeURIComponent(redirectAlert)); // 🔹 Dekodowanie treści ciasteczka
+        document.cookie = "redirectAlert=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // 🔹 Usunięcie ciasteczka
+      }
+    });
+  
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+  </script>
+  
+  
 
 
 <!-- Pop-up -->
@@ -38,24 +56,29 @@
             <% groups.forEach(group => { %>
                 <li><a href="/groups/<%= group.id.value %>/view"><i class="fas fa-users"></i> <%= group.name %></a></li>
             <% }) %>
+            <%  if (cookies.userId) { %>
+            <a href="#" onclick="addNewGroup()"><i>Add New Group...</i></a>
+            <% } %>
         </ul>
     </section>
 
+    <!-- Logowanie lub Profil użytkownika -->
     <div class="profile">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0CR_X6IA3ZOfxAV1sLwE9JrgKLNNhsfbqvw&s" alt="User avatar">
-        <div class="name">Krzysztof Palonek</div>
-        <p>kpalonek@gmail.com</p>
+        <%  if (cookies.userId) { %>
+            <strong>Logged as: <%= cookies.userName %> <%= cookies.userSurname %>  
+                <span><button class="red" onclick="logout()">
+                <img src="/icons/logout.png" alt="Delete" class="white-icon">
+            </button></span></p></strong>
+            <i><%= cookies.userEmail %> </i>
+           
+
+        <% } else { %>
+            <a href="#" onclick="showLoginPopup()">Login</a><br><br>
+            <a href="#" onclick="showRegisterPopup()">Register</a>
+        <% } %>
+        
     </div>
-
-    <nav class="settings-nav">
-        <ul>
-            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
-            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
-        </ul>
-        <!--<button onclick="showPopup('Test Popup', 'This is a test popup.', 'Confirm', 'Back', () => alert('OK clicked!'), () => alert('Cancel clicked!'));">
-            Show Pop-up
-        </button>-->
-    </nav>
+    
+    
+    
 </aside>
-
-

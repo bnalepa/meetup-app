@@ -1,40 +1,171 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const { apiClient, getGroups, getGroupEvents, getGroupMembers, getProposedVenuesForEvent, getGroupInfo, getUserRole, getGroupVenues, getVotingResults, getEventHistory } = require('./api/groups'); // Import API functions
 const { getUserAvailability, fetchUpcomingEvents } = require('./api/availability'); // Importujemy funkcję pobierającą dostępność
 
-const mockUserId = 'a423cec6-39bd-eb69-59bb-403fdce6bb6d';
+
+
 
 
 app.use(express.json()); // Middleware do obsługi treści JSON
 app.use(express.urlencoded({ extended: true })); // Opcjonalne: Obsługa danych przesłanych jako URL-encoded
+app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware: Udostępnij ciasteczka w EJS
+app.use((req, res, next) => {
+  res.locals.cookies = req.cookies;
+
+  next();
+});
+
+
+
+// Middleware do autoryzacji użytkownika
+app.use((req, res, next) => {
+  const userId = req.cookies.userId;
+
+  if (!userId && req.path !== '/' && req.path !== '/auth/login') {
+    res.cookie('redirectAlert', 'You have been redirected to the homepage. Please log in.', { maxAge: 1000, httpOnly: false });
+    return res.redirect('/');
+  }
+
+  res.locals.userId = userId; // Przekazujemy userId do widoków (np. EJS)
+  next();
+});
+
+
+
+
 // Middleware to fetch groups for all views
 app.use(async (req, res, next) => {
+  const userId = req.cookies.userId;
+
+  if (!userId) {
+    res.locals.groups = []; // Brak zalogowanego użytkownika -> pusta lista grup
+    return next();
+  }
+
   try {
-    const groups = await getGroups(); // Fetch groups from API
-    res.locals.groups = groups; // Make groups available in all views
-    next();
+    const groups = await getGroups(userId); // Pobierz grupy użytkownika
+    res.locals.groups = groups; // Udostępnij je we wszystkich widokach
   } catch (error) {
     console.error('Error loading groups:', error);
-    res.locals.groups = []; // Empty list in case of error
-    next();
+    res.locals.groups = []; // W razie błędu zwróć pustą tablicę
+  }
+
+  next();
+});
+
+
+
+// Auth
+app.post('/auth/login', async (req, res) => {
+  const { loginOrEmail, password } = req.body;
+
+  try {
+      // 🔹 Logowanie użytkownika
+      const loginResponse = await apiClient.post('/auth/login', { loginOrEmail, password });
+
+      if (loginResponse.status !== 200) {
+          return res.status(loginResponse.status).json({ error: 'Invalid credentials' });
+      }
+
+      const userId = loginResponse.data.userId.value;
+      const token = loginResponse.data.token;
+      // 🔹 Pobranie pełnych danych użytkownika z `/users/{id}`
+      const userResponse = await apiClient.get(`/users/${userId}`);
+
+      if (userResponse.status !== 200) {
+          return res.status(userResponse.status).json({ error: 'Failed to fetch user data' });
+      }
+
+      const user = userResponse.data;
+
+      // 🔹 Zapisujemy pełne dane użytkownika w ciasteczkach
+      res.cookie('userId', userId, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie('userEmail', user.email, { secure: true, sameSite: 'Strict', maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie('userName', user.name, { secure: true, sameSite: 'Strict', maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie('userSurname', user.surname, { secure: true, sameSite: 'Strict', maxAge: 24 * 60 * 60 * 1000 });
+      res.cookie('userToken', token, { secure: true, sameSite: 'Strict', maxAge: 24 * 60 * 60 * 1000 });
+
+      res.json({ message: 'Login successful', userId: userId, userEmail: user.email, name: user.name, surname: user.surname });
+  } catch (error) {
+      console.error('Login error:', error.message);
+      res.status(500).json({ error: 'Login failed' });
   }
 });
 
+
+app.post('/auth/logout', (req, res) => {
+  res.clearCookie('userId');
+  res.clearCookie('userEmail');
+  res.clearCookie('userName');
+  res.clearCookie('userSurname');
+  res.clearCookie('userToken');
+  res.json({ message: 'Logout successful' });
+});
+
+app.get('/auth/logout', (req, res) => {
+  res.clearCookie('userId');
+  res.clearCookie('userEmail');
+  res.clearCookie('userName');
+  res.clearCookie('userSurname');
+  res.clearCookie('userToken');
+  res.redirect('/'); // Przekierowanie na stronę główną po wylogowaniu
+});
+
+
+
+app.get('/auth/me', (req, res) => {
+  const userId = req.cookies.userId;
+  const userEmail = req.cookies.userEmail;
+  const userName = req.cookies.userName;
+  const userSurname = req.cookies.userSurname;
+  const userToken = req.cookies.userToken;
+
+  if (!userId) {
+      return res.status(401).json({ error: 'Not logged in' });
+  }
+
+  res.json({ userId, userEmail, name: userName, surname: userSurname , userToken});
+});
+
+
+app.get('/', async (req, res) => {
+  const userId = req.cookies.userId;
+  try {
+
+    // Jeśli użytkownik nie jest zalogowany, przekazujemy pustą listę wydarzeń
+    if (!userId) {
+      return res.render('homepage', { upcomingEvents: [] });
+    }
+
+    // Pobierz nadchodzące wydarzenia dla zalogowanego użytkownika
+    const upcomingEvents = await fetchUpcomingEvents(userId);
+
+    // Renderuj widok EJS i przekaż dane
+    res.render('homepage', {
+      upcomingEvents: upcomingEvents || []
+    });
+  } catch (error) {
+    console.error('Error loading homepage:', error.message);
+    res.status(500).send('Error loading homepage');
+  }
+});
 // Main page
-
-
 
 app.get('/availability', async (req, res) => {
   try {
     // Pobierz dostępności użytkownika
-    const userAvailability = await getUserAvailability(mockUserId);
+    const userId = req.cookies.userId;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+    const userAvailability = await getUserAvailability(userId);
 
     // Renderuj widok EJS i przekaż dane
     res.render('availability', {
@@ -52,6 +183,7 @@ app.get('/settings', (req, res) => {
 
 // Groups
 app.get('/groups/:id/view', async (req, res) => {
+  const userId = req.cookies.userId;
   const groupId = req.params.id;
   try {
     const events = await getGroupEvents(groupId);
@@ -81,18 +213,20 @@ app.get('/groups/:id/view', async (req, res) => {
         };
       })
     );
-
+    let loggedUserRole = 2;
     // Pobierz szczegółowe informacje o członkach (w tym ich role)
     const detailedMembers = await Promise.all(
       members.map(async (member) => {
         const userRoleData = await getUserRole(member.userId.value, groupId);
+          if(member.userId.value == userId)
+            loggedUserRole = userRoleData.role;
         try {
         
           return {
             id: member.userId.value,
             memberId: userRoleData.memberId,
             role: userRoleData.role, 
-            ...member
+            ...member,
           };
         } catch (error) {
           console.error("Error fetching user role:", error.message);
@@ -100,7 +234,7 @@ app.get('/groups/:id/view', async (req, res) => {
             id: member.userId.value || '0',
             memberId: userRoleData?.id,
             role: '2',
-            ...member
+            ...member,
           };
         }
       })
@@ -115,7 +249,8 @@ app.get('/groups/:id/view', async (req, res) => {
       groupName: groupInfo,
       phaseId,
       eventId ,
-      historyEvents
+      historyEvents,
+      loggedUserRole
     });
 
   } catch (error) {
@@ -132,7 +267,7 @@ app.post('/memberships', async (req, res) => {
     if (!email || !groupId.value) {
       return res.status(400).json({ error: 'Missing email' }); 
     }
-    console.log(`Adding member with email: ${email} to group ${groupId.value}`);
+
 
 
     // Wywołanie API backendowego do dodania członka
@@ -153,6 +288,20 @@ app.post('/memberships', async (req, res) => {
     res.status(500).json({ error: 'Failed to add member' });
   }
 });
+
+app.delete('/groups/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+      const response = await apiClient.delete(`/groups/${id}`);
+
+      res.cookie('redirectAlert', 'You have been redirected to the homepage. Please log in.', { maxAge: 1000, httpOnly: false });
+      return res.redirect('/');
+  } catch (error) {
+
+  }
+});
+
 
 app.put('/memberships/:id', async (req, res) => {
   const { id } = req.params; // ID członkostwa z URL
@@ -214,8 +363,10 @@ app.delete('/memberships/:id', async (req, res) => {
 
 
 app.get('/users/:userId/availabilities', async (req, res) => {
-  //const { userId } = req.params;
-  userId = mockUserId
+  
+  const userId = req.cookies.userId;
+if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
   try {
       const availability = await getUserAvailability(userId);
       res.json(availability);
@@ -229,14 +380,14 @@ app.post('/users/:userId/availabilities', async (req, res) => {
   //const { userId } = req.params;
   const { startTime, endTime } = req.body;
 
-  userId = mockUserId;
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
   try {
       const response = await apiClient.post(`/users/${userId}/availabilities`, {
           startTime,
           endTime
       });
-
-      console.log(`Backend API response:`, response.status, response.data); // 🔍 Logowanie odpowiedzi API
 
       if (response.status !== 201) {
           return res.status(response.status).json({ error: 'Failed to add availability' });
@@ -253,7 +404,8 @@ app.post('/users/:userId/availabilities', async (req, res) => {
 app.delete('/users/:userId/availabilities/:availabilityId', async (req, res) => {
   //const { userId, availabilityId } = req.params;
   const { availabilityId } = req.params;
-  userId = mockUserId;
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
   try {
       const response = await apiClient.delete(`/users/availabilities/${availabilityId}`);
 
@@ -282,23 +434,54 @@ app.get('/groups/:groupId/venues', async (req, res) => {
 }
 });
 
+app.post('/groups', async (req, res) => {
+  const { name } = req.body;
+  const userId = req.cookies.userId; 
+  console.log(userId)
+  if (!name ){
+      return res.status(400).json({ error: 'Group name is required' });
+  }
+  console.log(userId, name)
+  try {
+      const response = await apiClient.post('/groups', {
+          name,
+          createdBy: { value: userId }
+      });
+
+      if (response.status !== 201) {
+          return res.status(response.status).json({ error: 'Failed to create group' });
+      }
+
+      res.status(201).json(response.data);
+  } catch (error) {
+      console.error('Error creating group:', error.message);
+      res.status(500).json({ error: 'Failed to create group' });
+  }
+});
+
 
 
 // Dodaj nowe miejsce
 app.post('/venues', async (req, res) => {
-  const { name, location, groupId, createdBy } = req.body;
-
+  const { name, location, groupId} = req.body;
+  const userId = req.cookies.userId; 
+  console.log({
+    name,
+    location,
+    groupId: { value: groupId },
+    createdBy: { value: userId },
+})
   try {
       const response = await apiClient.post('/venues', {
           name,
           location,
           groupId: { value: groupId },
-          createdBy: { value: createdBy },
+          createdBy: { value: userId },
       });
 
       res.status(201).json(response.data);
 
-      location.ref
+
   } catch (error) {
       console.error('Error adding venue:', error.message);
       res.status(500).json({ error: 'Internal server error' });
@@ -309,7 +492,7 @@ app.post('/venues', async (req, res) => {
 app.post('/venues/:venueId/copy-to-group/:groupId', async (req, res) => {
   const { venueId, groupId } = req.params;
   const { requestedByUserId } = req.body;
-
+  console.log(venueId, groupId, requestedByUserId)
   try {
       const response = await apiClient.post(`/venues/${venueId}/copy-to-group/${groupId}`, {
           requestedByUserId: { value: requestedByUserId.value }
@@ -372,10 +555,11 @@ app.post('/events/:eventId/propose-venue', async (req, res) => {
 
 // Endpoint do dodawania nowego wydarzenia
 app.post('/events', async (req, res) => {
-  const { name, description, isRecurring, createdBy, groupId } = req.body;
-
+  const { name, description, isRecurring, groupId } = req.body;
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
   try {
-    if (!name || !description || isRecurring === undefined || !createdBy?.value || !groupId?.value) {
+    if (!name || !description || isRecurring === undefined || !groupId?.value) {
       return res.status(400).json({ error: "Missing required fields or invalid JSON format" });
     }
 
@@ -384,7 +568,7 @@ app.post('/events', async (req, res) => {
       description,
       isRecurring,
       startDate: "2010-01-01T00:00:00.000Z", 
-      createdBy: { value: createdBy.value }, 
+      createdBy: { value: userId }, 
       groupId: { value: groupId.value }
     };
 
@@ -434,12 +618,15 @@ app.delete('/events/:eventId', async (req, res) => {
 });
 
 app.post('/events/:eventId/vote', async (req, res) => {
+  const userId = req.cookies.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
   const { eventId } = req.params;
-  const { userId, venueId, decision } = req.body;
+  const { venueId, decision } = req.body;
 
   try {
       const response = await apiClient.post(`/events/${eventId}/vote`, {
-          userId,
+          userId: { value: userId },
           venueId,
           decision
       });
@@ -519,7 +706,7 @@ app.get('/groups/:id/view', async (req, res) => {
       })
     );
 
-    // Render group view with events, members, venues, proposed venues, and voting results
+
     res.render('group', {
       events: eventsWithDetails,
       members: detailedMembers,
@@ -600,25 +787,11 @@ app.put('/events/:id', async (req, res) => {
   }
 });
 
-app.get('/', async (req, res) => {
-  try {
-    // Pobierz nadchodzące wydarzenia dla mockowanego użytkownika
-    const upcomingEvents = await fetchUpcomingEvents(mockUserId);
-
-    // Renderuj widok EJS i przekaż dane
-    res.render('homepage', {
-      upcomingEvents: upcomingEvents || [] // Przekaż pustą tablicę, jeśli brak danych
-    });
-  } catch (error) {
-    console.error('Error loading homepage:', error.message);
-    res.status(500).send('Error loading homepage');
-  }
-});
 
 // Endpoint do pobierania dostępności
 app.get('/users/:userId/availabilities', async (req, res) => {
   try {
-    const availabilities = await getUserAvailability(mockUserId);
+    const availabilities = await getUserAvailability(userId);
     res.json(availabilities);
   } catch (error) {
     console.error('Error fetching availabilities:', error.message);
@@ -628,8 +801,9 @@ app.get('/users/:userId/availabilities', async (req, res) => {
 
 // Endpoint do pobierania nadchodzących wydarzeń
 app.get('/users/events/:userId/upcoming', async (req, res) => {
+  const userId = req.cookies.userId;
   try {
-    const upcomingEvents = await fetchUpcomingEvents(mockUserId);
+    const upcomingEvents = await fetchUpcomingEvents(userId);
     res.json(upcomingEvents);
   } catch (error) {
     console.error('Error fetching upcoming events:', error.message);

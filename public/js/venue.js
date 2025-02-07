@@ -4,9 +4,11 @@ function showAddVenuePopup(groupId) {
     const popupContent = `
         <label for="venueName">Name:</label>
         <input type="text" id="venueName" placeholder="Enter venue name"> <br>
-        
+
         <label for="venueLocation">Location:</label>
         <input type="text" id="venueLocation" placeholder="Enter venue location"><br>
+
+
     `;
 
     showPopup(
@@ -26,7 +28,7 @@ function showAddVenuePopup(groupId) {
 async function addVenue(groupId) {
     const name = document.getElementById('venueName').value;
     const location = document.getElementById('venueLocation').value;
-    const createdBy = 'e0767d15-acc0-47ce-8e36-5e7b993ed633'; // Mockowany userId
+
 
     if (!name || !location) {
         alert('Please fill all fields.');
@@ -42,19 +44,18 @@ async function addVenue(groupId) {
             body: JSON.stringify({
                 name,
                 location,
-                groupId,
-                createdBy
+                groupId
             }),
         });
 
         if (!response.ok) {
-            //throw new Error('Failed to add venue');
+            throw new Error('Failed to add venue');
         }
 
         location.reload();
     } catch (error) {
         console.error('Error adding venue:', error.message);
-        location.reload();
+        
     }
 
 }
@@ -104,6 +105,7 @@ function showCopyVenuePopup(venueId, currentGroupId) {
         .then(response => response.json())
         .then(groups => {
             // Filtruj grupy, aby wykluczyć bieżącą grupę
+            console.log(groups)
             const filteredGroups = groups.filter(group => group.id.value !== currentGroupId);
 
             // Tworzymy opcje dla selecta
@@ -132,46 +134,28 @@ function showCopyVenuePopup(venueId, currentGroupId) {
         });
 }
 
-// Funkcja do przenoszenia miejsca do innej grupy
-async function copyVenueToGroup(venueId, currentGroupId) {
-    const targetGroupId = document.getElementById('targetGroup').value;
-    const requestedByUserId = 'e0767d15-acc0-47ce-8e36-5e7b993ed633'; // Mockowany userId
-
-    if (!targetGroupId) {
-        alert('Please select a target group.');
-        return;
-    }
-
-    try {
-        const response = await fetch(`/venues/${venueId}/copy-to-group/${targetGroupId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                requestedByUserId: { value: requestedByUserId }
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to copy venue to group');
-        }
-
-        location.reload();
-    } catch (error) {
-        console.error('Error copying venue:', error.message);
-        alert('Failed to copy venue. Please try again.');
-    }
-}
-
-// Funkcja do wyświetlania pop-upu z wyborem grupy do przeniesienia miejsca
 function showCopyVenuePopup(venueId, currentGroupId) {
-    // Pobierz listę grup
     fetch('/groups')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(groups => {
-            // Filtruj grupy, aby wykluczyć bieżącą grupę
-            const filteredGroups = groups.filter(group => group.id.value !== currentGroupId);
+            console.log('Fetched groups:', groups);
+
+            if (!Array.isArray(groups)) {
+                throw new Error('Invalid data format received from server.');
+            }
+
+            // Filtrujemy grupy, aby wykluczyć obecną grupę
+            const filteredGroups = groups.filter(group => group.id?.value !== currentGroupId);
+
+            if (filteredGroups.length === 0) {
+                alert('No available groups to copy venue.');
+                return;
+            }
 
             // Tworzymy opcje dla selecta
             const groupOptions = filteredGroups.map(group => `
@@ -190,14 +174,15 @@ function showCopyVenuePopup(venueId, currentGroupId) {
                 popupContent,
                 'Copy',
                 'Cancel',
-                () => copyVenueToGroup(venueId, currentGroupId)
+                () => copyVenueToGroup(venueId, document.getElementById('targetGroup').value)
             );
         })
         .catch(error => {
             console.error('Error fetching groups:', error.message);
-            alert('Failed to load groups. Please try again.');
+            alert(`Failed to load groups. ${error.message}`);
         });
 }
+
 
 // Funkcja do przenoszenia miejsca do innej grupy
 async function copyVenueToGroup(venueId, currentGroupId) {
